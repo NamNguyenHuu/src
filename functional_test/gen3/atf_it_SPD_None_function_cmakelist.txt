@@ -1,0 +1,5 @@
+message(STATUS "Define test cases list of sheet SPD_None")
+
+### TEST_DEF(Test_Name Test_Feature Test_ID TARGET_PLATFORM TARGET_BOARD)
+
+#TEST_DEF("S4-TFA-IT-SPD_None001" "SPD_None_function" "TC1" "all" "salvator-xs;ebisu")

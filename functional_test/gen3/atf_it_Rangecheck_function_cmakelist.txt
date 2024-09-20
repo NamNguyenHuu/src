@@ -1,0 +1,49 @@
+message(STATUS "Define test cases list of sheet Rangecheck fucntion")
+
+### TEST_DEF(Test_Name Test_Feature Test_ID TARGET_PLATFORM TARGET_BOARD)
+
+TEST_DEF("Rangecheck_function_No1" "Rangecheck_function" "TC1" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No2" "Rangecheck_function" "TC2" "all" "salvator-xs;ebisu")
+##TEST_DEF("Rangecheck_function_No3" "Rangecheck_function" "TC3" "all" "salvator-xs;ebisu") # Not test
+TEST_DEF("Rangecheck_function_No4" "Rangecheck_function" "TC4" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No5" "Rangecheck_function" "TC5" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No6" "Rangecheck_function" "TC6" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No7" "Rangecheck_function" "TC7" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No8" "Rangecheck_function" "TC8" "all" "salvator-xs;ebisu")
+##TEST_DEF("Rangecheck_function_No9" "Rangecheck_function" "TC9" "all" "salvator-xs;ebisu") # Not test
+##TEST_DEF("Rangecheck_function_No10" "Rangecheck_function" "TC10" "all" "salvator-xs;ebisu") # Not test
+TEST_DEF("Rangecheck_function_No11" "Rangecheck_function" "TC11" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No12" "Rangecheck_function" "TC12" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No13" "Rangecheck_function" "TC13" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No14" "Rangecheck_function" "TC14" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+TEST_DEF("Rangecheck_function_No15" "Rangecheck_function" "TC15" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No16" "Rangecheck_function" "TC16" "all" "salvator-xs;ebisu")
+##TEST_DEF("Rangecheck_function_No17" "Rangecheck_function" "TC17" "all" "salvator-xs;ebisu") # Not test
+##TEST_DEF("Rangecheck_function_No18" "Rangecheck_function" "TC18" "all" "salvator-xs;ebisu") # Not test
+TEST_DEF("Rangecheck_function_No19" "Rangecheck_function" "TC19" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No20" "Rangecheck_function" "TC20" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No21" "Rangecheck_function" "TC21" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No22" "Rangecheck_function" "TC22" "all" "salvator-xs;ebisu")
+##TEST_DEF("Rangecheck_function_No23" "Rangecheck_function" "TC23" "all" "salvator-xs;ebisu") # Not test
+##TEST_DEF("Rangecheck_function_No24" "Rangecheck_function" "TC24" "all" "salvator-xs;ebisu") # Test Fail (ERROR:   BL2: DMA - Channel Address Error)
+TEST_DEF("Rangecheck_function_No25" "Rangecheck_function" "TC25" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No26" "Rangecheck_function" "TC26" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No27" "Rangecheck_function" "TC27" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No28" "Rangecheck_function" "TC28" "all" "salvator-xs;ebisu") # Normal Boot
+##TEST_DEF("Rangecheck_function_No29" "Rangecheck_function" "TC29" "all" "salvator-xs;ebisu") # Not test
+TEST_DEF("Rangecheck_function_No30" "Rangecheck_function" "TC30" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No31" "Rangecheck_function" "TC31" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+##TEST_DEF("Rangecheck_function_No32" "Rangecheck_function" "TC32" "all" "salvator-xs;ebisu") # Not test 
+##TEST_DEF("Rangecheck_function_No33" "Rangecheck_function" "TC33" "all" "salvator-xs;ebisu") # Not test FAIL (ERROR:   BL2: DMA - dest address invalid (0x50000001), len=(0x40000)) 
+##TEST_DEF("Rangecheck_function_No34" "Rangecheck_function" "TC34" "all" "salvator-xs;ebisu") # Not test FAIL (ERROR:   BL2: DMA - src address invalid (0x8640001), len=(0x40000))
+TEST_DEF("Rangecheck_function_No35" "Rangecheck_function" "TC35" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+TEST_DEF("Rangecheck_function_No36" "Rangecheck_function" "TC36" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No37" "Rangecheck_function" "TC37" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+TEST_DEF("Rangecheck_function_No38" "Rangecheck_function" "TC38" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No39" "Rangecheck_function" "TC39" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+TEST_DEF("Rangecheck_function_No40" "Rangecheck_function" "TC40" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No41" "Rangecheck_function" "TC41" "all" "salvator-xs;ebisu") # Not test FAIL (BL2: Booting BL31)
+TEST_DEF("Rangecheck_function_No42" "Rangecheck_function" "TC42" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No43" "Rangecheck_function" "TC43" "all" "salvator-xs;ebisu") 
+TEST_DEF("Rangecheck_function_No44" "Rangecheck_function" "TC44" "all" "salvator-xs;ebisu")
+TEST_DEF("Rangecheck_function_No45" "Rangecheck_function" "TC45" "all" "salvator-xs;ebisu")

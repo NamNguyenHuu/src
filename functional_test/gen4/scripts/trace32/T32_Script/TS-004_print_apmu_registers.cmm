@@ -1,0 +1,86 @@
+;==========================================================
+; Lauterbach script for R-Car S4 (CA55/Spider) IT test
+;==========================================================
+
+;--------------------------------------------------
+; 2022/03/08	New created
+;
+;--------------------------------------------------
+; Note
+;  ���̃X�N���v�g�͐���System setting �����s�����Ă��邱�Ƃ��O���ł�
+;
+;--------------------------------------------------
+
+SYStem.RESet
+SYStem.CPU CortexA55
+;AREA.view
+SYStem.CONFIG COREDEBUG.Base DAP:0x82410000  ;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+SYStem.CONFIG.CTI.Base DAP:0x82420000
+SYStem.JtagClock 20.MHz
+SYStem.Option ResBreak off   ;Halt the core after reset
+SYStem.Option TRST on    ;Allow debugger to drive TRST
+SYStem.Option EnReset on   ;Allow the debugger to drive nRESET/nSRST
+;SYStem.Option DBGACK off   ;DBGACK active on debugger memory accesses
+SYStem.Option WaitReset off   ;Wait with JTAG activities after deasserting reset
+;SYStem.Up     ;Resets the target
+;TrOnChip.SET RESET ON
+;TrOnChip
+SYStem.Option.CFLUSH OFF
+SYStem.Attach
+Break.Select Program Onchip
+PRINTER.AREA
+
+;==================================================
+; Print APMU registers
+
+;;DO ;-----------------------------------------------
+
+;SYStem.Mode Go
+Break
+
+PRIVATE &CLUSTER_BASE &CORE_BASE &clnum &corenum
+&CLUSTER_BASE=AZSD:0xE6170400
+&CORE_BASE=AZSD:0xE6170800
+
+;AREA.view
+
+PRINTF "=== Printing APMU status registers. ==="
+
+&clnum=0
+&clofs=0
+&corenum=0
+WHILE &clnum<4.
+(
+  PRINTF "Cluster %d {" &clnum
+  PRINTF "  PWRCTRLCL%d(0x%08X) = 0x%08X" &clnum &CLUSTER_BASE+0x00 Data.LONG(&CLUSTER_BASE+0x00)
+  PRINTF "  FSMSTSRCL%d(0x%08X) = 0x%08X" &clnum &CLUSTER_BASE+0x18 Data.LONG(&CLUSTER_BASE+0x18)
+  PRINTF ""
+  PRINTF "  Core %d {" &corenum
+  PRINTF "    PWRCTRLC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x00 Data.LONG(&CORE_BASE+0x00)
+  PRINTF "    FSMSTSRC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x18 Data.LONG(&CORE_BASE+0x18)
+  PRINTF "    SAFECTRLC%d(0x%08X) = 0x%08X" &corenum &CORE_BASE+0x20 Data.LONG(&CORE_BASE+0x20)
+  PRINTF "    RVBARPLC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x38 Data.LONG(&CORE_BASE+0x38)
+  PRINTF "    RVBARPHC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x3C Data.LONG(&CORE_BASE+0x3C)
+  PRINTF "  }"
+  &corenum=&corenum+1
+  PRINTF "  Core %d {" &corenum
+  PRINTF "    PWRCTRLC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x40+0x00 Data.LONG(&CORE_BASE+0x40+0x00)
+  PRINTF "    FSMSTSRC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x40+0x18 Data.LONG(&CORE_BASE+0x40+0x18)
+  PRINTF "    SAFECTRLC%d(0x%08X) = 0x%08X" &corenum &CORE_BASE+0x40+0x20 Data.LONG(&CORE_BASE+0x40+0x20)
+  PRINTF "    RVBARPLC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x40+0x38 Data.LONG(&CORE_BASE+0x40+0x38)
+  PRINTF "    RVBARPHC%d(0x%08X)  = 0x%08X" &corenum &CORE_BASE+0x40+0x3C Data.LONG(&CORE_BASE+0x40+0x3C)
+  PRINTF "  }"
+  &corenum=&corenum+1
+
+  PRINTF "}"
+  PRINTF ""
+  
+  PRinTer.file my_append.txt /Append
+  WinPrint.AREA.view	  
+
+  &clnum=&clnum+1
+  &CLUSTER_BASE=&CLUSTER_BASE+0x40
+  &CORE_BASE=&CORE_BASE+0x200
+)
+Quit
+ENDDO ;--------------------------------------------

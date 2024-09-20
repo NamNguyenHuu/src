@@ -1,0 +1,233 @@
+;==========================================================
+;	Lauterbach script for Falcon(R-Car S4 System Evaluation Board)
+;	Linkup script.
+;==========================================================
+
+;--------------------------------------------------
+; 2021/08/04	New created
+;
+;--------------------------------------------------
+
+;--------------------------------------------------
+;	Configure system settings (DO NOT EDIT)
+;--------------------------------------------------
+SYStem.RESet					;Initialize system
+SYStem.CPU CortexA55
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 2.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 4.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 6.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4,5,6
+;;;;;;;;;;;
+SYStem.CONFIG CoreNumber 8.
+SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000 DAP:0x82E10000 DAP:0x82F10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000 DAP:0x82E20000 DAP:0x82F20000		;R-CarS4 CA55-CTI0 (CPU0)
+CORE.ASSIGN 1
+;CORE.ASSIGN 1,2,3
+;CORE.ASSIGN 1,2,3,4,5,6,7,8
+;;;;;;;;;;;
+;SYStem.JtagClock 20.MHz
+SYStem.Option ResBreak on			;Halt the core after reset
+;SYStem.Option TRST on				;Allow debugger to drive TRST
+;SYStem.Option EnReset on			;Allow the debugger to drive nRESET/nSRST
+;SYStem.Option DBGACK off			;DBGACK active on debugger memory accesses
+;SYStem.Option WaitReset off			;Wait with JTAG activities after deasserting reset
+;SYStem.Up					;Resets the target
+;TrOnChip.SET RESET ON
+;TrOnChip
+SYStem.Option.CFLUSH OFF
+SYStem.Attach
+
+PRINTER.AREA
+
+Break.Select Program Onchip
+Break
+AREA.create ITDEBUG 200. 1000.
+AREA.view ITDEBUG
+WinPOS 0.0 0.0 116. 26. 0. 0. W001
+AREA.view A000
+
+GoSUB DUMP_GENERIC_TIMER
+GoSUB DUMP_GIC_REGISTER
+
+DUMP_GENERIC_TIMER:
+
+	PRIVATE &CNTFID0
+	&CNTFID0=AZSD:0xE6080020
+
+	PRINTF "=== Printing Generic Couter registers. ==="
+
+	PRINTF "CNTFID0(0x%08X) = 0x%08X" &CNTFID0 Data.LONG(&CNTFID0)
+RETURN
+
+DUMP_GIC_REGISTER:
+PRIVATE &count &count2
+PRIVATE &ofs
+
+; GICD
+PRIVATE &GICD_BASE
+&GICD_BASE=AZSD:0xF1000000
+
+PRINTF "=== Printing GICD@GIC600 registers. ==="
+
+PRIVATE &GICD_CTLR &GICD_IGROUPR &GICD_IPRIORITYR &GICD_ICFGR
+&GICD_CTLR=0x0000
+&GICD_IGROUPR=0x0080
+&GICD_ISENABLER=0x0100
+&GICD_ICENABLER=0x0180
+&GICD_IPRIORITYR=0x0400
+&GICD_ICFGR=0x0C00
+&GICD_IGRPMODR=0x0D00
+
+PRINTF "GICD(0x%08X) {" &GICD_BASE
+PRINTF "  GICD_CTLR(0x%08X) value=0x%08X" &GICD_BASE+&GICD_CTLR Data.LONG(&GICD_BASE+&GICD_CTLR)
+
+&count=0
+&ofs=0
+WHILE &count<32.
+(
+  PRINTF "  GICD_IGRROUPR[%02d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_IGROUPR+&ofs Data.LONG(&GICD_BASE+&GICD_IGROUPR+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+&count=0
+&ofs=0
+WHILE &count<32.
+(
+  PRINTF "  GICD_ISENABLER[%02d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_ISENABLER+&ofs Data.LONG(&GICD_BASE+&GICD_ISENABLER+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+&count=0
+&ofs=0
+WHILE &count<32.
+(
+  PRINTF "  GICD_ICENABLER[%02d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_ICENABLER+&ofs Data.LONG(&GICD_BASE+&GICD_ICENABLER+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+&count=0
+&ofs=0
+WHILE &count<256.
+(
+  PRINTF "  GICD_IPRIORITYR[%03d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_IPRIORITYR+&ofs Data.LONG(&GICD_BASE+&GICD_IPRIORITYR+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+&count=0
+&ofs=0
+WHILE &count<64.
+(
+  PRINTF "  GICD_ICFGR[%03d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_ICFGR+&ofs Data.LONG(&GICD_BASE+&GICD_ICFGR+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+&count=0
+&ofs=0
+WHILE &count<32.
+(
+  PRINTF "  GICD_IGRPMODR[%03d](0x%08X) value=0x%08X" &count &GICD_BASE+&GICD_IGRPMODR+&ofs Data.LONG(&GICD_BASE+&GICD_IGRPMODR+&ofs)
+  &count=&count+1
+  &ofs=&ofs+4
+)
+
+PRINTF "}"
+PRINTF ""
+
+
+
+; GICR for LPI
+
+PRIVATE &GICR_LPI_BASE
+&GICR_LPI_BASE=AZSD:0xF1060000
+
+PRIVATE &GICR_WAKER
+&GICR_WAKER=0x0014
+
+; GICR for SGI/PPI
+PRIVATE &GICR_SGIPPI_BASE
+&GICR_SGIPPI_BASE=AZSD:0xF1070000
+
+&GICR_IGROUPR0=0x0080
+&GICR_ISENABLER0=0x0100
+&GICR_ICENABLER0=0x0180
+&GICR_ISPENDR0=0x0200
+&GICR_ICPENDR0=0x0280
+&GICR_ISACTIVER0=0x0300
+&GICR_ICACTIVER0=0x0380
+&GICR_IPRIORITYR=0x0400
+&GICR_ICFGR=0x0C00
+&GICR_IGRPMODR0=0x0D00
+&GICR_NSACR=0x0E00
+
+PRINTF "=== Printing GICR@GIC600 registers. ==="
+
+&count=0
+WHILE &count<8.
+(
+  PRINTF "GICR for LPIs[%d](0x%08X) {" &count &GICR_LPI_BASE
+  PRINTF "  GICR_WAKER(0x%08X) value=0x%08X" &GICR_LPI_BASE+&GICR_WAKER Data.LONG(&GICR_LPI_BASE+&GICR_WAKER)
+  PRINTF "}"
+
+  &GICR_LPI_BASE=&GICR_LPI_BASE+0x20000
+  &count=&count+1
+)
+PRINTF ""
+
+&count=0
+WHILE &count<8.
+(
+  PRINTF "GICR for SGIs/PPIs[%d](0x%08X) {" &count &GICR_SGIPPI_BASE
+  PRINTF "  GICR_IGROUPR0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_IGROUPR0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_IGROUPR0)
+  PRINTF "  GICR_ISENABLER0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ISENABLER0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ISENABLER0)
+  PRINTF "  GICR_ICENABLER0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ICENABLER0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ICENABLER0)
+  PRINTF "  GICR_ISPENDR0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ISPENDR0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ISPENDR0)
+  PRINTF "  GICR_ICPENDR0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ICPENDR0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ICPENDR0)
+  PRINTF "  GICR_ISACTIVER0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ISACTIVER0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ISACTIVER0)
+  PRINTF "  GICR_ICACTIVER0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_ICACTIVER0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_ICACTIVER0)
+
+  &ofs=0
+  &count2=0
+  WHILE &count2<8
+  (
+    PRINTF "  GICR_IPRIORITYR[%d](0x%08X) value=0x%08X" &count2 &GICR_SGIPPI_BASE+&GICR_IPRIORITYR+&ofs Data.LONG(&GICR_SGIPPI_BASE+&GICR_IPRIORITYR+&ofs)
+    &count2=&count2+1
+    &ofs=&ofs+4
+  )
+
+  &ofs=0
+  &count2=0
+  WHILE &count2<2
+  (
+    PRINTF "  GICR_ICFGR[%d](0x%08X) value=0x%08X" &count2 &GICR_SGIPPI_BASE+&GICR_ICFGR+&ofs Data.LONG(&GICR_SGIPPI_BASE+&GICR_ICFGR+&ofs)
+    &count2=&count2+1
+    &ofs=&ofs+4
+  )
+
+  PRINTF "  GICR_IGRPMODR0(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_IGRPMODR0 Data.LONG(&GICR_SGIPPI_BASE+&GICR_IGRPMODR0)
+  PRINTF "  GICR_NSACR(0x%08X) value=0x%08X" &GICR_SGIPPI_BASE+&GICR_NSACR Data.LONG(&GICR_SGIPPI_BASE+&GICR_NSACR)
+  PRINTF "}"
+
+  &GICR_SGIPPI_BASE=&GICR_SGIPPI_BASE+0x20000
+  &count=&count+1
+)
+PRINTF "END_DUMP_REGISTER"
+PRinTer.file my_append.txt /Append
+WinPrint.AREA.view ITDEBUG
+Quit	
+ENDDO ;--

@@ -1,0 +1,13 @@
+message(STATUS "Define test cases list of sheet Logging")
+
+### TEST_DEF(Test_Name Test_Feature Test_ID TARGET_PLATFORM TARGET_BOARD)
+
+#TEST_DEF("S4-TFA-IT-Logging001" "Logging_function" "TC1" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging002" "Logging_function" "TC2" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging003" "Logging_function" "TC3" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging004" "Logging_function" "TC4" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging005" "Logging_function" "TC5" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging006" "Logging_function" "TC6" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging007" "Logging_function" "TC7" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging008" "Logging_function" "TC8" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Logging009" "Logging_function" "TC9" "all" "spider")

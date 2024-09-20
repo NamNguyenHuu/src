@@ -1,0 +1,249 @@
+;==========================================================
+;	Lauterbach script for SALVATOR(R-Car H3 System Evaluation Board)
+;	Linkup script.
+;===========================================r===============
+
+;--------------------------------------------------
+; 2015/03/31	New created
+; 2015/08/03	load loader / security and linux image
+;
+;--------------------------------------------------
+
+;--------------------------------------------------
+;	Configure system settings (DO NOT EDIT)
+;--------------------------------------------------
+;GOSUB MULTICORE
+GOSUB SETUP_SINGLECORE
+
+;SYStem.Down
+;GOSUB SETUP_MULTICORE_4
+
+;--------------------------------------------------
+; Other settings
+;--------------------------------------------------
+LOCAL &image_pwd
+;D.S ZSD:0xE6150900 %LE %Long 0xFFFFFFFF
+;D.S ZSD:0xE6150008 %LE %Long 0x0
+
+;--------------------------------------------------
+; ƒoƒCƒiƒŠ‚ðƒ[ƒh‚·‚é‚©‚Ç‚¤‚©
+;--------------------------------------------------
+LOCAL &binaryload
+&binaryload="/NoCode"		; ƒ[ƒh‚µ‚È‚¢
+;&binaryload=""			; ƒ[ƒh‚·‚é
+
+;--------------------------------------------------
+; ƒrƒ‹ƒhŠÂ‹«‚ÌƒpƒX(ARM Trusted Firmware)
+;--------------------------------------------------
+LOCAL &atfwdd
+LOCAL &buildrel
+;&atfw="C:\Work\Secure\scripts\Images\atf_sdk\arm-trusted-firmware"
+;&atfw="C:\work\DEBUG\ATFv1.5\20190621_G3Yv3.21.00.03_G3Yv215_PT4\arm-trusted-firmware_rcar_gen3_yocto3.21.0"
+;&atfw="C:\work\DEBUG\ATFv1.5\arm-trusted-firmware"
+;&atfw="C:\work\DEBUG\ATFv2.3\arm-trusted-firmware"
+&atfw="/data/baohua/arm-trusted-firmware-gen3"
+&buildrel="release"		; ƒŠƒŠ[ƒXƒrƒ‹ƒh
+;&buildrel="debug"		; ƒfƒoƒbƒOƒrƒ‹ƒh
+
+;--------------------------------------------------
+; ƒrƒ‹ƒhŠÂ‹«‚ÌƒpƒX(OP-TEE OS)
+;--------------------------------------------------
+;LOCAL &optee
+;&optee="\\10.205.56.37\share\mnt\1c869db4-d4ac-4450-a5dc-1d0616b272ef\home\fujiwara\WORK\yocto_docker\app_v3\optee_os"
+
+; for Hardware Break point on NOR-Flash
+;Break.Select Program Onchip
+
+GOSUB LOAD_SECURITY_IMAGE
+
+;--------------------------------------------------
+;  Load Linux
+;--------------------------------------------------
+;data.LOAD.Binary ".\linux\Image" 0x48080000 /NoClear
+;data.LOAD.Binary ".\linux\r8a7795-salvatorx.dtb" 0x48000000 /NoClear
+;data.LOAD.Binary ".\linux\linaro-image-minimal-initramfs-genericarmv8-20141212-729.rootfs.cpio.gz" 0x50000000 /NoClear
+
+
+;Go
+;Wait !State.Run()
+
+Break.Delete 0x44100000
+
+
+;R.S PC 0x48080000
+;R.S X0 0x48000000
+
+
+;--------------------------------------------------
+enddo
+;--------------------------------------------------
+;-------------------------------------------------------------------------------------
+; MACRO
+;-------------------------------------------------------------------------------------
+
+SETUP_MULTICORE_2:
+;	SYStem.CONFIG CoreNumber 2.
+;	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80510000 	; CA57-DBG
+;	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80520000		; CA57-CTI
+	CORE.ASSIGN 1,2
+
+	GOSUB SETUP_MULTICORE_BASE
+RETURN
+
+SETUP_MULTICORE_3:
+;	SYStem.CONFIG CoreNumber 3.
+;	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80510000 DAP:0x80610000
+;	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80520000 DAP:0x80620000
+	CORE.ASSIGN 1,2,3
+
+	GOSUB SETUP_MULTICORE_BASE
+RETURN
+
+SETUP_MULTICORE_4:
+;	SYStem.CONFIG CoreNumber 4.
+;	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80510000 DAP:0x80610000 DAP:0x80710000
+;	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80520000 DAP:0x80720000 DAP:0x80720000
+	CORE.ASSIGN 1,2,3,4
+
+	GOSUB SETUP_MULTICORE_BASE
+RETURN
+
+SETUP_MULTICORE_BASE:
+;	SYStem.RESet
+;	SYStem.CPU CORTEXA57
+;	SYStem.JtagClock 20.MHz
+;	SYStem.Option.ResBreak on
+;	SYStem.Option.TRST on
+;	SYStem.Option.EnReset on
+;	SYStem.Option.DBGACK off
+;	SYStem.Option WaitReset off
+	SYStem.Attach
+;	SYStem.UP
+RETURN
+
+SETUP_SINGLECORE:
+	SYStem.RESet
+;       SYStem.CPU R8A77960
+;	SYStem.CPU CortexA57A53
+	SYStem.CPU CortexA57
+;	SYStem.CPU CortexA53
+	SYStem.CONFIG CoreNumber 4.
+;	SYStem.CONFIG CoreNumber 8.
+	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80510000 DAP:0x80610000 DAP:0x80710000
+;	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80510000 DAP:0x80610000 DAP:0x80710000 DAP:0x80C10000 DAP:0x80D10000 DAP:0x80E10000 DAP:0x80F10000
+;	SYStem.CONFIG.COREDEBUG.Base DAP:0x80410000 DAP:0x80C10000 DAP:0x80510000 DAP:0x80D10000 DAP:0x80610000 DAP:0x80E10000 DAP:0x80710000 DAP:0x80F10000
+	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80520000 DAP:0x80620000 DAP:0x80720000
+;	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80520000 DAP:0x80620000 DAP:0x80720000 DAP:0x80C20000 DAP:0x80D20000 DAP:0x80E20000 DAP:0x80F20000
+;	SYStem.CONFIG.CTI.Base DAP:0x80420000 DAP:0x80C20000 DAP:0x80520000 DAP:0x80D20000 DAP:0x80720000 DAP:0x80E20000 DAP:0x80720000 DAP:0x80F20000
+;	CORE.ASSIGN 1
+	CORE.ASSIGN 1,2,3,4
+	CORE.List
+	SYStem.JtagClock 20.0MHz
+	SYStem.Option.ResBreak on
+	SYStem.Option.TRST on
+	SYStem.Option.EnReset on
+;	SYStem.Option.DBGACK off
+	SYStem.Option WaitReset off
+;;;;;;
+;	TrOnchip.Set StepVector ON
+;	SYStem.Option CFLUSH OFF
+;;;;;;
+	SYStem.Up
+
+	; ### CA57DBGRCR ###
+;	local &data
+;	&data=(Data.Long(AZSD:0xe6152180))
+;	&data=0x00080000|&data
+;	D.S AZSD:0xe6150900 %LE %Long ~&data
+;	D.S AZSD:0xe6152180 %LE %Long &data
+
+;	D.S AZSD:0xe61801cc %LE %Long 0x1
+;	wait 1ms
+
+	; ### CA57WUPCR ###
+;	D.S AZSD:0xe6150900 %LE %Long ~0xF
+;	D.S AZSD:0xe6152010 %LE %Long 0xF
+;	&data=(Data.Long(AZSD:0xe6152040))
+;	while (&data&0x3333)!=0x0
+;	(
+;		&data=(Data.Long(AZSD:0xe6152040))
+;	)
+
+	; ### CA57RESCNT ###
+;	D.S AZSD:0xe6160040 %LE %Long 0xa5a50000
+;	wait 100ms
+;	&data=(Data.Long(AZSD:0xe6160040))
+;	while (&data&0xF)!=0x0
+;	(
+;		&data=(Data.Long(AZSD:0xe6160040))
+;	)
+
+	; ## PWRPSEU0 ##
+;	D.S AZSD:0xe61800B8 %LE %Long 0xF
+	; ## CA57CPUnCR ##
+	;D.S AZSD:0xe6150900 %LE %Long ~0x3
+	;D.S AZSD:0xe6152100 %LE %Long 0x3
+;	D.S AZSD:0xe6150900 %LE %Long ~0x3
+;	D.S AZSD:0xe6152110 %LE %Long 0x3
+;	D.S AZSD:0xe6150900 %LE %Long ~0x3
+;	D.S AZSD:0xe6152120 %LE %Long 0x3
+;	D.S AZSD:0xe6150900 %LE %Long ~0x3
+;	D.S AZSD:0xe6152130 %LE %Long 0x3
+
+;	SYStem.Down
+;	CORE.ASSIGN 1,2,3,4
+;	SYStem.Attach
+
+;	D.A ZSX:0xE6350000 wfi
+;	D.A ZSX:0xE6350004 b 0xE6350000
+;	R.S PC 0xE6350000 /CORE 1.
+;	R.S PC 0xE6350000 /CORE 2.
+;	R.S PC 0xE6350000 /CORE 3.
+
+;	D.S AZSD:0xe6160040 %LE %Long 0xa5a50007
+
+;	SYStem.Down
+;	CORE.ASSIGN 1
+;	SYStem.Attach
+
+RETURN
+
+
+LOAD_SECURITY_IMAGE:
+
+        Break.set 0xE6304000 /Program /Onchip                        ;BL2‚Ìæ“ª
+        Break.set 0x44000000 /Program /Onchip                        ;BL31‚Ìæ“ª
+        ;Break.set 0x44100000 /Program /Onchip                        ;BL32‚Ìæ“ª
+        ;Break.set 0x49000000 /Program /Onchip                        ;BL33‚Ìæ“ª
+
+        Go
+        Wait !State.Run()
+        Break.Delete 0xE6304000
+
+        ;  Load BL2 Debug Image
+        &image_pwd="&atfw"+"/build/rcar/"+"&buildrel"+"/bl2/bl2.elf"
+;        Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "C:\Work\Secure\scripts\Images\atf_sdk"
+        Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "&atfw"
+        d.l
+
+;;;;;;;;BL2‚ÅŽ~‚ß‚éê‡‚Í‚±‚¿‚ç‚ðƒRƒƒ“ƒgƒAƒEƒg‚µ‚È‚¢‚ÆBL31‚Ü‚ÅGo‚µ‚Ä‚µ‚Ü‚¤B
+;        Go
+;        Wait !State.Run()
+;        Break.Delete 0x44000000
+
+        ;  Load BL31 Debug Image
+        &image_pwd="&atfw"+"/build/rcar/"+"&buildrel"+"/bl31/bl31.elf"
+;        Data.LOAD.Elf "&image_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "C:\Work\Secure\scripts\Images\atf_sdk"
+        Data.LOAD.Elf "&image_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "&atfw"
+        d.l
+
+
+        ;Break.set 0x49000000 /Program /Onchip                        ;BL33‚Ìæ“ª
+        ;Data.LOAD C:\Work\Secure\scripts\Images\atf_sdk\vmlinux /NoCode /NoClear /StripPART 4. /SOURCEPATH "C:\Work\Secure\scripts\Images\atf_sdk\kernel-source"
+
+        ;  Load BL32 Debug Image
+;        &image_pwd="&optee"+"\out\arm-plat-rcar\core\tee.elf"
+;	Data.LOAD.Elf "&image_pwd" Z:0x0 &binaryload /StripPART 5 /SOURCEPATH "C:\Users\70496173\Desktop\optee_os_final2_ST"
+;        Data.LOAD.Elf "&image_pwd" Z:0x0 &binaryload /StripPART 5 /SOURCEPATH "&optee"
+;       /StripPART 5. "\\10.205.57.252\share\mnt\1c869db4-d4ac-4450-a5dc-1d0616b272ef\home\fujiwara\WORK\yocto_docker\app_v3\optee_os"
+RETURN

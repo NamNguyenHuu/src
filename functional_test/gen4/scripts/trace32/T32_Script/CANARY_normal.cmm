@@ -1,0 +1,194 @@
+;==========================================================
+;	Lauterbach script for Falcon(R-Car S4 System Evaluation Board)
+;	Linkup script.
+;==========================================================
+
+;--------------------------------------------------
+; 2021/08/04	New created
+;
+;--------------------------------------------------
+
+;--------------------------------------------------
+;	Configure system settings (DO NOT EDIT)
+;--------------------------------------------------
+SYStem.RESet					;Initialize system
+SYStem.CPU CortexA55
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 2.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 4.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 6.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4,5,6
+;;;;;;;;;;;
+SYStem.CONFIG CoreNumber 8.
+SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000 DAP:0x82E10000 DAP:0x82F10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000 DAP:0x82E20000 DAP:0x82F20000		;R-CarS4 CA55-CTI0 (CPU0)
+CORE.ASSIGN 1
+;CORE.ASSIGN 1,2,3
+;CORE.ASSIGN 1,2,3,4,5,6,7,8
+;;;;;;;;;;;
+;SYStem.JtagClock 20.MHz
+SYStem.Option ResBreak on			;Halt the core after reset
+;SYStem.Option TRST on				;Allow debugger to drive TRST
+;SYStem.Option EnReset on			;Allow the debugger to drive nRESET/nSRST
+;SYStem.Option DBGACK off			;DBGACK active on debugger memory accesses
+;SYStem.Option WaitReset off			;Wait with JTAG activities after deasserting reset
+;SYStem.Up					;Resets the target
+;TrOnChip.SET RESET ON
+;TrOnChip
+SYStem.Option.CFLUSH OFF
+SYStem.Attach
+
+PRINTER.AREA
+
+Break.Select Program Onchip
+
+
+
+
+;--------------------------------------------------
+;	Load module  settings
+;--------------------------------------------------
+&binaryload="/NoCode"		; ƒ[ƒh‚µ‚È‚¢
+;&binaryload=""			; ƒ[ƒh‚·‚é
+;--------------------------------------------------
+LOCAL &ipl_buildrel
+&ipl_buildrel="ATF" 	; IPL ƒŠƒŠ[ƒXƒrƒ‹ƒh
+;&ipl_buildrel="debug"		; IPL ƒfƒoƒbƒOƒrƒ‹ƒh
+;--------------------------------------------------
+LOCAL &atf_buildrel
+;&atf_buildrel="release"	; ATF ƒŠƒŠ[ƒXƒrƒ‹ƒh
+&atf_buildrel="debug"		; ATF ƒfƒoƒbƒOƒrƒ‹ƒh
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; CA55 IPL
+;--------------------------------------------------
+&iplw="/shsv/Android/SoftIP/sec_bsp/build_info"
+;&iplw="C:\work\DEBUG\S4\S4_CA_Loader_dbgloop"
+&ipl_pwd="&iplw"+"/S4/"+"&ipl_buildrel"+"/ca55_loader.elf"
+Data.LOAD.Elf "&ipl_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "&iplw" 
+;--------------------------------------------------
+
+GOSUB SET_UP_DEFAULT_VIEW
+GOSUB BY_PASS_CA55_IPL
+GOSUB SET_BL31_ENTRYPOINT
+;--------------------------------------------------
+; ATF BL31
+;--------------------------------------------------
+;&atfw="/data/baohua/arm-trusted-firmware"
+;&image_pwd="&atfw"+"/build/rcar_gen4/"+"&atf_buildrel"+"/bl31/bl31.elf"
+;Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "&atfw" 
+
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Test Program
+;--------------------------------------------------
+;&dumyBL33w="C:\work\DEBUG\S4\secure_monitor_dummy_el1-master"
+;&dummy_pwd="&dumyBL33w"+"\build\default\bin\dummy_el1.elf"
+;Data.LOAD.Elf "&dummy_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "&dumyBL33w"
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; OPTEE OS
+;--------------------------------------------------
+;&opteew="C:\work\DEBUG\S4\optee_os"
+;&optee_pwd="&opteew"+"\out\arm-plat-rcar_gen4\core\tee.elf"
+;Data.LOAD.Elf "&optee_pwd" &binaryload /NoClear /StripPART 7 /SOURCEPATH "&opteew"
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Break point setting
+;--------------------------------------------------
+;Break.set 0x46400000 /Program /Onchip	; BL31 break
+
+;--------------------------------------------------
+;Break.set 0x44100000 /Program /Onchip	; optee break
+;--------------------------------------------------
+;Break.set 0x50000000 /Program /Onchip	; u-boot or Test Program break
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Other load
+;--------------------------------------------------
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\Image" 0x48080000
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\r8a779f0-spider.dtb" 0x48000000
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\initramfs-memtest.ext4.gz" 0x5c3f9520
+;--------------------------------------------------
+
+
+SET_UP_DEFAULT_VIEW:
+
+        ; Clear all window
+        ; Winclear
+
+        WinPOS 0.0 57.857 116. 10. 23. 1. W002
+        WinTABS 13. 16. 0. 0. 0. 0. 0.
+        Break.List
+
+        WinPOS 0.0 0.0 116. 26. 0. 0. W001
+        AREA.view A000
+
+        WinPOS 120.38 0.0 116. 31. 24. 1. W003
+        WinTABS 10. 10. 25. 62.
+        data.list
+
+        ;WinPAGE.select P000
+
+RETURN
+
+
+BY_PASS_CA55_IPL:
+        ; Setup List view
+        List e:Startup
+
+        ; Delete breakpoint
+        Break.Delete
+
+        ; Break at Startup (infinity loop)
+        Break
+
+        ; 1. Set break point at Startup
+        ;B.Set Startup
+        ;Break.set 0xE6300008  ;IPL break after infinity loop
+
+
+        ; 2. Modify PC to bypass infinity loop
+        Register.Set PC 0xE6300004
+
+        ; 3. Step over this point to go pass infinity loop
+        Break.set 0x46400000 /Program /Onchip	; BL31 break
+
+
+RETURN
+
+SET_BL31_ENTRYPOINT:
+	; ATF BL31
+	;--------------------------------------------------
+	&atfw="/data/GitlabCI/_forRunnerID1696/.build/TDV1x3CJ/0/gitlab/rcar-env/rcar-env/build/renesas/tools/security_bsp/arm_trusted_firmware/test/functional_test/arm-trusted-firmware"
+	&image_pwd="&atfw"+"/build/rcar_gen4/"+"&atf_buildrel"+"/bl31/bl31.elf"
+	Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "&atfw" 
+	B.Set __stack_chk_fail
+      	Mode.Asm
+	Go
+	WAIT !STATE.RUN()
+	Go 
+Quit
+
+
+enddo

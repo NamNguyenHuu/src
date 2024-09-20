@@ -1,0 +1,298 @@
+;==========================================================
+;	Lauterbach script for Falcon(R-Car S4 System Evaluation Board)
+;	Linkup script.
+;==========================================================
+
+;--------------------------------------------------
+; 2021/08/04	New created
+;
+;--------------------------------------------------
+
+;--------------------------------------------------
+;	Configure system settings (DO NOT EDIT)
+;--------------------------------------------------
+SYStem.RESet					;Initialize system
+SYStem.CPU CortexA55
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 2.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 4.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4
+;;;;;;;;;;;
+;SYStem.CONFIG CoreNumber 6.
+;SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+;SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000		;R-CarS4 CA55-CTI0 (CPU0)
+;CORE.ASSIGN 1,2,3,4,5,6
+;;;;;;;;;;;
+SYStem.CONFIG CoreNumber 8.
+SYStem.CONFIG COREDEBUG.Base DAP:0x82410000 DAP:0x82510000 DAP:0x82610000 DAP:0x82710000 DAP:0x82C10000 DAP:0x82D10000 DAP:0x82E10000 DAP:0x82F10000	;R-CarS4 CA55SS0 MP Core CPU 0 Debug
+SYStem.CONFIG.CTI.Base DAP:0x82420000 DAP:0x82520000 DAP:0x82620000 DAP:0x82720000 DAP:0x82C20000 DAP:0x82D20000 DAP:0x82E20000 DAP:0x82F20000		;R-CarS4 CA55-CTI0 (CPU0)
+CORE.ASSIGN 1
+;CORE.ASSIGN 1,2,3
+;CORE.ASSIGN 1,2,3,4,5,6,7,8
+;;;;;;;;;;;
+;SYStem.JtagClock 20.MHz
+SYStem.Option ResBreak on			;Halt the core after reset
+;SYStem.Option TRST on				;Allow debugger to drive TRST
+;SYStem.Option EnReset on			;Allow the debugger to drive nRESET/nSRST
+;SYStem.Option DBGACK off			;DBGACK active on debugger memory accesses
+;SYStem.Option WaitReset off			;Wait with JTAG activities after deasserting reset
+;SYStem.Up					;Resets the target
+;TrOnChip.SET RESET ON
+;TrOnChip
+SYStem.Option.CFLUSH OFF
+SYStem.Attach
+
+PRINTER.AREA
+
+Break.Select Program Onchip
+
+
+
+
+;--------------------------------------------------
+;	Load module  settings
+;--------------------------------------------------
+&binaryload="/NoCode"		; ƒ[ƒh‚µ‚È‚¢
+;&binaryload=""			; ƒ[ƒh‚·‚é
+;--------------------------------------------------
+LOCAL &ipl_buildrel
+&ipl_buildrel="ATF" 	; IPL ƒŠƒŠ[ƒXƒrƒ‹ƒh
+;&ipl_buildrel="debug"		; IPL ƒfƒoƒbƒOƒrƒ‹ƒh
+;--------------------------------------------------
+LOCAL &atf_buildrel
+;&atf_buildrel="release"	; ATF ƒŠƒŠ[ƒXƒrƒ‹ƒh
+&atf_buildrel="debug"		; ATF ƒfƒoƒbƒOƒrƒ‹ƒh
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; CA55 IPL
+;--------------------------------------------------
+&iplw="/shsv/Android/SoftIP/sec_bsp/build_info"
+;&iplw="C:\work\DEBUG\S4\S4_CA_Loader_dbgloop"
+&ipl_pwd="&iplw"+"/S4/"+"&ipl_buildrel"+"/ca55_loader.elf"
+Data.LOAD.Elf "&ipl_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "&iplw" 
+;--------------------------------------------------
+
+GOSUB SET_UP_DEFAULT_VIEW
+GOSUB BY_PASS_CA55_IPL
+GOSUB BOOT_KIND_SCRIPT
+GoSUB SET_BREAK_BL32
+GoSUB DUMP_CCI_REGISTER
+;--------------------------------------------------
+; ATF BL31
+;--------------------------------------------------
+;&atfw="/data/baohua/arm-trusted-firmware"
+;&image_pwd="&atfw"+"/build/rcar_gen4/"+"&atf_buildrel"+"/bl31/bl31.elf"
+;Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "&atfw" 
+
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Test Program
+;--------------------------------------------------
+;&dumyBL33w="C:\work\DEBUG\S4\secure_monitor_dummy_el1-master"
+;&dummy_pwd="&dumyBL33w"+"\build\default\bin\dummy_el1.elf"
+;Data.LOAD.Elf "&dummy_pwd" &binaryload /NoClear /StripPART 5 /SOURCEPATH "&dumyBL33w"
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; OPTEE OS
+;--------------------------------------------------
+;&opteew="C:\work\DEBUG\S4\optee_os"
+;&optee_pwd="&opteew"+"\out\arm-plat-rcar_gen4\core\tee.elf"
+;Data.LOAD.Elf "&optee_pwd" &binaryload /NoClear /StripPART 7 /SOURCEPATH "&opteew"
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Break point setting
+;--------------------------------------------------
+;Break.set 0x46400000 /Program /Onchip	; BL31 break
+
+;--------------------------------------------------
+;Break.set 0x44100000 /Program /Onchip	; optee break
+;--------------------------------------------------
+;Break.set 0x50000000 /Program /Onchip	; u-boot or Test Program break
+;--------------------------------------------------
+
+
+;--------------------------------------------------
+; Other load
+;--------------------------------------------------
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\Image" 0x48080000
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\r8a779f0-spider.dtb" 0x48000000
+;Data.LOAD.Binary "C:\work\DEBUG\S4\initramfs_test\initramfs-memtest.ext4.gz" 0x5c3f9520
+;--------------------------------------------------
+
+
+SET_UP_DEFAULT_VIEW:
+
+        ; Clear all window
+        ; Winclear
+	AREA.create ITDEBUG 200. 1000.
+	AREA.view ITDEBUG
+
+        WinPOS 0.0 57.857 116. 10. 23. 1. W002
+        WinTABS 13. 16. 0. 0. 0. 0. 0.
+        Break.List
+
+        WinPOS 0.0 0.0 116. 26. 0. 0. W001
+        AREA.view A000
+
+        WinPOS 120.38 0.0 116. 31. 24. 1. W003
+        WinTABS 10. 10. 25. 62.
+        data.list
+	Mode.Asm
+        ;WinPAGE.select P000
+
+RETURN
+
+
+BY_PASS_CA55_IPL:
+	; ATF BL31
+	;--------------------------------------------------
+	&atfw="/data/GitlabCI/_forRunnerID1696/.build/TDV1x3CJ/0/gitlab/rcar-env/rcar-env/build/renesas/tools/security_bsp/arm_trusted_firmware/test/functional_test/arm-trusted-firmware"
+	&image_pwd="&atfw"+"/build/rcar_gen4/"+"&atf_buildrel"+"/bl31/bl31.elf"
+	Data.LOAD.Elf "&image_pwd" &binaryload /StripPART 5 /SOURCEPATH "&atfw" 
+        ; Setup List view
+        ;List e:Startup
+
+        ; Delete breakpoint
+        Break.Delete
+	Break
+	; 3. Step over this point to go pass infinity loop
+        Break.set 0x46400000 /Program /Onchip	; BL31 break
+        ; Break at Startup (infinity loop)
+
+        ; 1. Set break point at Startup
+        ;B.Set Startup
+        ;Break.set 0xE6300008  ;IPL break after infinity loop
+
+
+        ; 2. Modify PC to bypass infinity loop
+        Register.Set PC 0xE6300004
+	Go
+	WAIT !STATE.RUN()
+
+RETURN
+
+BOOT_KIND_SCRIPT:
+	PRIVATE &BASE_ADDR
+	&BASE_ADDR=AZSD:0x46422200
+
+	PRINTF "=== Printing BL32/BL33 Parameter AREA. ==="
+
+	PRINTF "BL32 Image Info {"
+	PRINTF "    param_header {"
+	PRINTF "        type       (0x%08x) = 0x%02X" &BASE_ADDR+0x0000 Data.BYTE(&BASE_ADDR+0x0000)
+	PRINTF "        version    (0x%08x) = 0x%02X" &BASE_ADDR+0x0001 Data.BYTE(&BASE_ADDR+0x0001)
+	PRINTF "        size       (0x%08x) = 0x%04X" &BASE_ADDR+0x0002 Data.WORD(&BASE_ADDR+0x0002)
+	PRINTF "        attr       (0x%08x) = 0x%08X" &BASE_ADDR+0x0004 Data.WORD(&BASE_ADDR+0x0004)
+	PRINTF "    }"
+	PRINTF "    image_base     (0x%08x) = 0x%016X" &BASE_ADDR+0x0008 Data.QUAD(&BASE_ADDR+0x0008)
+	PRINTF "    image_size     (0x%08x) = 0x%08X" &BASE_ADDR+0x0010 Data.LONG(&BASE_ADDR+0x0010)
+	PRINTF "    image_max_size (0x%08x) = 0x%08X" &BASE_ADDR+0x0014 Data.LONG(&BASE_ADDR+0x0014)
+	PRINTF "}"
+	PRINTF "BL33 Image Info {"
+	PRINTF "    param_header {"
+	PRINTF "        type       (0x%08x) = 0x%02X" &BASE_ADDR+0x0018 Data.BYTE(&BASE_ADDR+0x0018)
+	PRINTF "        version    (0x%08x) = 0x%02X" &BASE_ADDR+0x0019 Data.BYTE(&BASE_ADDR+0x0019)
+	PRINTF "        size       (0x%08x) = 0x%04X" &BASE_ADDR+0x001A Data.WORD(&BASE_ADDR+0x001A)
+	PRINTF "        attr       (0x%08x) = 0x%08X" &BASE_ADDR+0x001C Data.WORD(&BASE_ADDR+0x001C)
+	PRINTF "    }"
+	PRINTF "    image_base     (0x%08x) = 0x%016X" &BASE_ADDR+0x0020 Data.QUAD(&BASE_ADDR+0x0020)
+	PRINTF "    image_size     (0x%08x) = 0x%08X" &BASE_ADDR+0x0028 Data.LONG(&BASE_ADDR+0x0028)
+	PRINTF "    image_max_size (0x%08x) = 0x%08X" &BASE_ADDR+0x002C Data.LONG(&BASE_ADDR+0x002C)
+	PRINTF "}"
+	PRINTF "BL33 entry point {"
+	PRINTF "    param_header {"
+	PRINTF "        type       (0x%08x) = 0x%02X" &BASE_ADDR+0x0030 Data.BYTE(&BASE_ADDR+0x0030)
+	PRINTF "        version    (0x%08x) = 0x%02X" &BASE_ADDR+0x0031 Data.BYTE(&BASE_ADDR+0x0031)
+	PRINTF "        size       (0x%08x) = 0x%04X" &BASE_ADDR+0x0032 Data.WORD(&BASE_ADDR+0x0032)
+	PRINTF "        attr       (0x%08x) = 0x%08X" &BASE_ADDR+0x0034 Data.WORD(&BASE_ADDR+0x0034)
+	PRINTF "    }"
+	PRINTF "    pc             (0x%08x) = 0x%016X" &BASE_ADDR+0x0038 Data.QUAD(&BASE_ADDR+0x0038)
+	PRINTF "    spsr           (0x%08x) = 0x%08X" &BASE_ADDR+0x0040 Data.LONG(&BASE_ADDR+0x0040)
+	PRINTF "    aapcs64_params {"
+	PRINTF "        arg0       (0x%08x) = 0x%016X" &BASE_ADDR+0x0048 Data.QUAD(&BASE_ADDR+0x0048)
+	PRINTF "        arg1       (0x%08x) = 0x%016X" &BASE_ADDR+0x0050 Data.QUAD(&BASE_ADDR+0x0050)
+	PRINTF "        arg2       (0x%08x) = 0x%016X" &BASE_ADDR+0x0058 Data.QUAD(&BASE_ADDR+0x0058)
+	PRINTF "        arg3       (0x%08x) = 0x%016X" &BASE_ADDR+0x0060 Data.QUAD(&BASE_ADDR+0x0060)
+	PRINTF "        arg4       (0x%08x) = 0x%016X" &BASE_ADDR+0x0068 Data.QUAD(&BASE_ADDR+0x0068)
+	PRINTF "        arg5       (0x%08x) = 0x%016X" &BASE_ADDR+0x0070 Data.QUAD(&BASE_ADDR+0x0070)
+	PRINTF "        arg6       (0x%08x) = 0x%016X" &BASE_ADDR+0x0078 Data.QUAD(&BASE_ADDR+0x0078)
+	PRINTF "        arg7       (0x%08x) = 0x%016X" &BASE_ADDR+0x0080 Data.QUAD(&BASE_ADDR+0x0080)
+	PRINTF "    }"
+	PRINTF "}"
+	PRINTF "BL32 entry point {"
+	PRINTF "    param_header {"
+	PRINTF "        type       (0x%08x) = 0x%02X" &BASE_ADDR+0x0088 Data.BYTE(&BASE_ADDR+0x0088)
+	PRINTF "        version    (0x%08x) = 0x%02X" &BASE_ADDR+0x0089 Data.BYTE(&BASE_ADDR+0x0089)
+	PRINTF "        size       (0x%08x) = 0x%04X" &BASE_ADDR+0x008A Data.WORD(&BASE_ADDR+0x008A)
+	PRINTF "        attr       (0x%08x) = 0x%08X" &BASE_ADDR+0x008C Data.WORD(&BASE_ADDR+0x008C)
+	PRINTF "    }"
+	PRINTF "    pc             (0x%08x) = 0x%016X" &BASE_ADDR+0x0090 Data.QUAD(&BASE_ADDR+0x0090)
+	PRINTF "    spsr           (0x%08x) = 0x%08X" &BASE_ADDR+0x0098 Data.LONG(&BASE_ADDR+0x0098)
+	PRINTF "    aapcs64_params {"
+	PRINTF "        arg0       (0x%08x) = 0x%016X" &BASE_ADDR+0x00A0 Data.QUAD(&BASE_ADDR+0x00A0)
+	PRINTF "        arg1       (0x%08x) = 0x%016X" &BASE_ADDR+0x00A8 Data.QUAD(&BASE_ADDR+0x00A8)
+	PRINTF "        arg2       (0x%08x) = 0x%016X" &BASE_ADDR+0x00B0 Data.QUAD(&BASE_ADDR+0x00B0)
+	PRINTF "        arg3       (0x%08x) = 0x%016X" &BASE_ADDR+0x00B8 Data.QUAD(&BASE_ADDR+0x00B8)
+	PRINTF "        arg4       (0x%08x) = 0x%016X" &BASE_ADDR+0x00C0 Data.QUAD(&BASE_ADDR+0x00C0)
+	PRINTF "        arg5       (0x%08x) = 0x%016X" &BASE_ADDR+0x00C8 Data.QUAD(&BASE_ADDR+0x00C8)
+	PRINTF "        arg6       (0x%08x) = 0x%016X" &BASE_ADDR+0x00D0 Data.QUAD(&BASE_ADDR+0x00D0)
+	PRINTF "        arg7       (0x%08x) = 0x%016X" &BASE_ADDR+0x00D8 Data.QUAD(&BASE_ADDR+0x00D8)
+	PRINTF "    }"
+	PRINTF "}"
+
+;--------------------------------------------------
+
+	PRINTF "=== Printing Boot Kind AREA. ==="
+	&BASE_ADDR=AZSD:0x46422F00
+
+	PRINTF "Boot Kind (0x%08x) = 0x%016X" &BASE_ADDR Data.QUAD(&BASE_ADDR)
+
+	; Set breakpoint to the bl31_early_platform_setup2()
+	B.Set bl31_early_platform_setup2
+	Go
+	WAIT !STATE.RUN()
+RETURN
+
+SET_BREAK_BL32:
+	Break.set 0x50000000 /Program /Onchip	; u-boot or Test Program break
+	Go
+	WAIT !STATE.RUN()
+RETURN
+
+DUMP_CCI_REGISTER:
+	PRIVATE &APSREG_CCI_AUX &APSREG_P_CCI500_AUX
+	&APSREG_CCI_AUX=AZSD:0xE6289010
+	&APSREG_P_CCI500_AUX=AZSD:0xE62A9010
+
+	PRIVATE &snoop_ctrl_port0 &snoop_ctrl_port1 &snoop_ctrl_port2 &snoop_ctrl_port3
+	&snoop_ctrl_port0=AZSD:0xF1201000
+	&snoop_ctrl_port1=AZSD:0xF1202000
+	&snoop_ctrl_port2=AZSD:0xF1203000
+	&snoop_ctrl_port3=AZSD:0xF1204000
+
+	PRINTF "=== Printing APSREG and CCI registers. ==="
+	PRINTF "APSREG_CCI_AUX(0x%08X) value = 0x%08X" &APSREG_CCI_AUX Data.LONG(&APSREG_CCI_AUX)
+	PRINTF "APSREG_P_CCI500_AUX(0x%08X) value = 0x%08X" &APSREG_P_CCI500_AUX Data.LONG(&APSREG_P_CCI500_AUX)
+	PRINTF "snoop_ctrl_port0(0x%08X) value = 0x%08X" &snoop_ctrl_port0 Data.LONG(&snoop_ctrl_port0)
+	PRINTF "snoop_ctrl_port1(0x%08X) value = 0x%08X" &snoop_ctrl_port1 Data.LONG(&snoop_ctrl_port1)
+	PRINTF "snoop_ctrl_port2(0x%08X) value = 0x%08X" &snoop_ctrl_port2 Data.LONG(&snoop_ctrl_port2)
+	PRINTF "snoop_ctrl_port3(0x%08X) value = 0x%08X" &snoop_ctrl_port3 Data.LONG(&snoop_ctrl_port3)
+	PRINTF "END_DUMP_REGISTER"
+PRinTer.file my_append.txt /Append
+WinPrint.AREA.view ITDEBUG
+Quit	
+enddo

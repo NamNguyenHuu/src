@@ -1,0 +1,596 @@
+{
+  "flash_writer": {
+    "condor":   "ICUMXA_Flash_writer_SCIF_DUMMY_CERT_EB200400_condor.mot",
+    "condor-i": "ICUMXA_Flash_writer_SCIF_DUMMY_CERT_EB200400_condor.mot",
+    "v3h1sk":   "ICUMXA_Flash_writer_SCIF_DUMMY_CERT_EB200400_condor.mot",
+    "v3h2sk":   "ICUMXA_Flash_writer_SCIF_DUMMY_CERT_EB200400_condor.mot",
+    "eagle":    "AArch32_Flash_writer_SCIF_DUMMY_CERT_E6300400_EAGLE.mot",
+    "v3m2sk":   "AArch32_Flash_writer_SCIF_DUMMY_CERT_E6300400_EAGLE.mot",
+    "falcon" :  "ICUMXA_Flash_writer_SCIF_DUMMY_CERT_EB200000_falcon.mot",
+    "spider" :  "ICUMX_Flash_writer_SCIF_DUMMY_CERT_EB203000_S4.mot"
+  },
+  "ipl": {
+    "condor": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "bl31-condor.srec",
+          "img_addr":   "44000000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-condor.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-condor.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+    "condor-i": {
+        "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "bl31-condor.srec",
+          "img_addr":   "44000000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-condor.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-condor.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+    "eagle": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "cr7_loader.srec",
+          "img_addr":   "E6304000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa3.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "bl31-eagle.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "42220800",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "u-boot-elf-eagle.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "cr7_loader.srec",
+          "img_addr":   "E6304000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa3.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "42220800",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-eagle.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+      "v3m2sk": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "cr7_loader_v3msk.srec",
+          "img_addr":   "E6304000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa3.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "bl31-eagle.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "42220800",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3msk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "cr7_loader_v3msk.srec",
+          "img_addr":   "E6304000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa3.srec",
+          "img_addr":   "E6320000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "42220800",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3msk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+    "falcon": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB300000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa17.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "440000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB380000",
+          "flash_addr": "480000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "580000"
+        },
+        {
+          "name":       "bl31-falcon.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "680000"
+        },
+        {
+          "name":       "u-boot-elf-falcon.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "780000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB300000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa17.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "440000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB380000",
+          "flash_addr": "480000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "580000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "680000"
+        },
+        {
+          "name":       "u-boot-elf-falcon.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "780000"
+        }
+      ]
+    },
+    "v3h2sk": {
+        "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "bl31-condor.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3hsk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3hsk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+    "v3h1sk": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "bl31-condor.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3hsk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ],
+      "smoni": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "0"
+        },
+        {
+          "name":       "icumxa_loader.srec",
+          "img_addr":   "EB2D8000",
+          "flash_addr": "40000"
+        },
+        {
+          "name":       "cert_header_sa6.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "180000"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB2B4000",
+          "flash_addr": "C0000"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "1C0000"
+        },
+        {
+          "name":       "smoni.srec",
+          "img_addr":   "46400000",
+          "flash_addr": "2C0000"
+        },
+        {
+          "name":       "u-boot-elf-v3hsk.srec",
+          "img_addr":   "50000000",
+          "flash_addr": "840000"
+        }
+      ]
+    },
+    "spider": {
+      "atf": [
+        {
+          "name":       "bootparam_sa0.srec",
+          "img_addr":   "EB200000",
+          "flash_addr": "00000",
+	  "target_device": "qspi"
+        },
+        {
+          "name":       "icumx_loader.srec",
+          "img_addr":   "EB210000",
+          "flash_addr": "40000",
+	  "target_device": "qspi"
+        },
+        {
+          "name":       "cert_header_sa9.srec",
+          "img_addr":   "EB230000",
+          "flash_addr": "240000",
+	  "target_device": "qspi"
+        },
+        {
+          "name":       "dummy_fw.srec",
+          "img_addr":   "EB240000",
+          "flash_addr": "280000",
+	  "target_device": "qspi"
+        },
+        {
+          "name":       "dummy_rtos.srec",
+          "img_addr":   "E2100000",
+          "flash_addr": "500000",
+	  "target_device": "qspi"
+        },
+	{
+          "name":       "ca55_loader.srec",
+          "img_addr":   "E6300000",
+          "flash_addr": "480000",
+	  "target_device": "qspi"
+	},
+        {
+          "name":       "dummy_g4mh_case0.srec",
+          "img_addr":   "00000000",
+          "flash_addr": "900000",
+	  "target_device": "qspi"
+        },
+        {
+          "name":       "dummy_icumh_case1.srec",
+          "img_addr":   "00500000",
+          "flash_addr": "380000",
+	  "target_device": "qspi"
+	},
+        {
+          "name":       "bl31-spider.srec",
+          "img_addr":   "46400000",
+          "sector_addr":"7000",
+          "target_device": "emmc"
+        },
+        {
+          "name":       "tee-spider.srec",
+          "img_addr":   "44100000",
+          "sector_addr":"7400",
+          "target_device": "emmc"
+        },
+	{
+          "name":       "u-boot-elf-spider.srec",
+          "img_addr":   "50000000",
+          "sector_addr":"7C00",
+          "target_device": "emmc"
+        }
+      ]
+    }
+  }
+}

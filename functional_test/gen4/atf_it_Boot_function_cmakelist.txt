@@ -1,0 +1,6 @@
+message(STATUS "Define test cases list of sheet ERRATA")
+
+### TEST_DEF(Test_Name Test_Feature Test_ID TARGET_PLATFORM TARGET_BOARD)
+
+#TEST_DEF("S4-TFA-IT-Boot001" "Boot_function" "TC1" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Boot096" "Boot_function" "TC96" "all" "spider")

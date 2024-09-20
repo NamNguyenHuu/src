@@ -1,0 +1,6 @@
+message(STATUS "Define test cases list of sheet ERRATA")
+
+### TEST_DEF(Test_Name Test_Feature Test_ID TARGET_PLATFORM TARGET_BOARD)
+
+#TEST_DEF("S4-TFA-IT-Canary001" "Canary_function" "TC1" "all" "spider")
+#TEST_DEF("S4-TFA-IT-Canary002" "Canary_function" "TC2" "all" "spider")
